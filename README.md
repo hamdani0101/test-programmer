@@ -1,6 +1,6 @@
 # test-programmer
 
-Teknologi yang Digunakan
+# Teknologi yang Digunakan
 Python 3.x
 Django
 Django REST Framework
