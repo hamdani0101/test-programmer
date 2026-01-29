@@ -31,19 +31,20 @@ def import_produk(request):
 
     for item in data:
         kategori, _ = Kategori.objects.get_or_create(
-            nama_kategori=item['kategori']
+            nama_kategori=item["kategori"]
         )
 
         status, _ = Status.objects.get_or_create(
-            nama_status=item['status']
+            nama_status=item["status"]
         )
 
-        Produk.objects.get_or_create(
-            nama_produk=item['nama_produk'],
+        Produk.objects.update_or_create(
+            id_produk=item["id_produk"],
             defaults={
-                "harga":item['harga'],
-                "kategori":kategori,
-                "status":status
+                "nama_produk": item["nama_produk"],
+                "harga": int(item["harga"]),
+                "kategori": kategori,
+                "status": status
             }
         )
 
@@ -54,10 +55,6 @@ def produk_list(request):
     produk=Produk.objects.all()
     return render(request, 'produk/list.html', {'produk':produk})
 
-def produk_bisa_dijual(request):
-    produk=Produk.objects.filter(status__nama_status="bisa dijual")
-    return render(request, 'produk/list.html', {'produk': produk})
-
 def produk_tambah(request):
     form = ProdukForm(request.POST or None)
     if form.is_valid():
@@ -67,7 +64,7 @@ def produk_tambah(request):
     return render(request, 'produk/form.html', {'form':form, 'title':'Tambah Produk'})
 
 def produk_edit(request, id):
-    produk = get_object_or_404(Produk, id=id)
+    produk = get_object_or_404(Produk, id_produk=id)
     
     form = ProdukForm(request.POST or None, instance=produk)
     if form.is_valid():
@@ -77,6 +74,6 @@ def produk_edit(request, id):
     return render(request, 'produk/form.html', {'form':form, 'title': 'Edit Produk'})
 
 def produk_hapus(request, id):
-    produk = get_object_or_404(Produk, id=id)
+    produk = get_object_or_404(Produk, id_produk=id)
     produk.delete()
     return redirect('produk_list')
